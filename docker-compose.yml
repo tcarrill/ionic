@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  api:
+    build: ./api
+    image: api
+    command: python app.py
+    depends_on:
+      - postgres
+    environment:
+      FLASK_ENV: development
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespasswd
+      POSTGRES_host: postgres
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./api:/usr/src/app
+
+  postgres:
+    build: ./postgres
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres  # Changing either User, Pass or DB requires updating alembic.ini:53 and chat_app_api.app:10
+      POSTGRES_PASSWORD: postgrespasswd
+      POSTGRES_DB: chat_app
+      PGDATA: /var/lib/postgres/data/pgdata
+    ports:
+      - "15432:5432"
+    volumes:
+      - ~/.chat_app/pgdata:/var/lib/postgres/data/pgdata
+
+  ui:
+    build: ./ui
+    image: ui
+    command: npm run start
+    environment:
+      PORT: 3000
+      CHAT_API_ENDPOINT: http://localhost:5000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ui:/usr/src/app
+      - /usr/src/app/node_modules
