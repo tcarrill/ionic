@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS users (
+  id INT NOT NULL,
+  username VARCHAR(25) UNIQUE NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS rooms (
+  id INT NOT NULL,
+  name VARCHAR(25) UNIQUE NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id INT NOT NULL,
+  user_id INT NOT NULL,
+  room_id INT NOT NULL,
+  message VARCHAR,
+  created TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users (id),
+  FOREIGN KEY (room_id) REFERENCES rooms (id)
+);

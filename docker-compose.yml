@@ -29,6 +29,7 @@ services:
       - "15432:5432"
     volumes:
       - ~/.chat_app/pgdata:/var/lib/postgres/data/pgdata
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   ui:
     build: ./ui
