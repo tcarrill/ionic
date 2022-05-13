@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { ChatBubble } from '../chat-bubble/chat-bubble';
 import { models } from '../../models';
 import { useParams } from 'react-router-dom';
+import {APIService} from '../../services';
+
+const API_URL: string = process.env.CHAT_API_ENDPOINT || 'http://localhost:5000';
 
 export interface ChatroomProps { }
 
@@ -13,13 +16,28 @@ type RouteParams = {
 export const Chatroom: React.FunctionComponent<ChatroomProps> = () => {
     const [message, setMessage] = useState('');
     const messages: models.Message[] = [];
-    const sendingMessage = false;
+    const sendingMessage = true;
     const loadingMessages = false;
     const { id } = useParams<RouteParams>();
     const currentUser: models.User | undefined = { id: '1', name: 'Test User' };
 
     const sendMessage = () => {
         if (sendingMessage) {
+                        APIService.do(`${API_URL}/messages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({
+                    room_id: id,
+                    content: message,
+                })
+            }).then(r => {
+                setMessage(r.message)
+            }).catch(e => {
+                setMessage(e.message)
+            })
             return;
         }
     };
@@ -38,8 +56,8 @@ export const Chatroom: React.FunctionComponent<ChatroomProps> = () => {
                 })}
             </main>
             <footer className='chat__input'>
-                <textarea disabled={sendingMessage} value={message} onChange={(e) => setMessage(e.target.value)} />
-                <button disabled={sendingMessage} onClick={() => sendMessage()}> Send </button>
+                <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
+                <button onClick={() => sendMessage()}> Send </button>
             </footer>
         </section>
     )

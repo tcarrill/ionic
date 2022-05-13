@@ -1,10 +1,12 @@
 import './chat.scss';
 import { Link, NavLink, Route, RouteProps, Routes } from 'react-router-dom';
-import React from 'react';
+import React, {useState} from 'react';
 import { stringToColor } from '../../utils';
 import { Chatroom, ChatroomCard, NewChatroom } from '../../components';
 import { models } from '../../models';
+import {APIService} from '../../services';
 
+const API_URL: string = process.env.CHAT_API_ENDPOINT || 'http://localhost:5000';
 export interface ChatProps { }
 
 export const ChatPage: React.FunctionComponent<ChatProps> = () => {
@@ -14,6 +16,7 @@ export const ChatPage: React.FunctionComponent<ChatProps> = () => {
         id: '1',
         name: 'Test User',
     };
+
 
     // need to load chatrooms
     const chatrooms: models.Chatroom[] = [{
@@ -27,7 +30,27 @@ export const ChatPage: React.FunctionComponent<ChatProps> = () => {
         }
     }];
 
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
+    const [message, setMessage] = useState('');
+
     const logout = () => {
+        APIService.do(`${API_URL}/logout`, {
+                method: 'POST',
+                 headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            }).then(r => {
+                localStorage.removeItem('token')
+                setMessage(r.message)
+                setIsLoaded(true)
+                setIsError(false)
+            }).catch(e => {
+                setMessage(e.message)
+                setIsLoaded(true)
+                setIsError(true)
+            })
         return;
     };
 

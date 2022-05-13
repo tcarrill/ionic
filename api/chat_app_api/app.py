@@ -126,7 +126,9 @@ def create_user():
             "message": f'An Error occurred: {e}',
         }), 500
 
-    return jsonify(user_schema.dump(user)), 200
+    return jsonify({
+            "message": f'Created {user.username}',
+        }), 200, 200
 
 
 @app.route('/users', methods=['GET'])
@@ -149,7 +151,10 @@ def create_room(current_user):
         return jsonify({
             "message": f'Room {room.name} already exists',
         }), 400
-    return jsonify(room_schema.dump(room)), 200
+
+    return jsonify({
+            "message": f'Created {room.name}',
+        }), 200
 
 
 @app.route('/rooms', methods=['GET'])
