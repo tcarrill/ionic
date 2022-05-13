@@ -1,2 +1,8 @@
 flask
-flask_cors
+flask-cors
+flask-sqlalchemy
+flask-marshmallow
+marshmallow-sqlalchemy
+psycopg2-binary
+pyjwt
+

@@ -4,6 +4,7 @@ services:
   api:
     build: ./api
     image: api
+    container_name: api
     command: python app.py
     depends_on:
       - postgres
@@ -11,7 +12,8 @@ services:
       FLASK_ENV: development
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespasswd
-      POSTGRES_host: postgres
+      POSTGRES_HOST: postgres
+      SECRET_KEY: YRrT9ma99q7uQBjW
     ports:
       - "5000:5000"
     volumes:
@@ -20,13 +22,14 @@ services:
   postgres:
     build: ./postgres
     image: postgres:14-alpine
+    container_name: postgres
     environment:
       POSTGRES_USER: postgres  # Changing either User, Pass or DB requires updating alembic.ini:53 and chat_app_api.app:10
       POSTGRES_PASSWORD: postgrespasswd
       POSTGRES_DB: chat_app
       PGDATA: /var/lib/postgres/data/pgdata
     ports:
-      - "15432:5432"
+      - "5432:5432"
     volumes:
       - ~/.chat_app/pgdata:/var/lib/postgres/data/pgdata
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -34,6 +37,7 @@ services:
   ui:
     build: ./ui
     image: ui
+    container_name: ui
     command: npm run start
     environment:
       PORT: 3000

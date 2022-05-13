@@ -11,7 +11,7 @@ export const App: React.FunctionComponent = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path='/login' element={<LoginPage/>} />
-                    <Route path='/signup' element={<SignUpPage/>} />
+                    <Route path='/sign-up' element={<SignUpPage/>} />
                     <Route path='/chat/*' element={<ChatPage/>} />
                     <Route
                         path='*'
